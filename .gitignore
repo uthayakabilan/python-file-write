@@ -1,0 +1,4 @@
+cx-health-monitor/Multicast/Baseline/*
+cx-health-monitor/Multicast/TestRun/*
+.vscode
+.DS_Store
