@@ -6,8 +6,20 @@ from datetime import date
 base_cmd = "/usr/bin/python3 /Users/kabil/Desktop/Files/Playground/python-file-write/write-code/generateData.py {image_name}"
 # Base directory
 base_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/"
-# Base directory of the root log file
+# Base directory of the main log file
 base_log_file_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/log_file.csv"
+
+
+# Function to create base directory if it does not exixts
+def checkBaseDir():
+    if os.path.exists(base_dir):
+        return True
+    else:
+        try:
+            os.makedirs(base_dir, exist_ok=True)
+            return True
+        except:
+            return False
 
 
 # utility function to run the ht command to generate the data with the specified image name
@@ -66,30 +78,42 @@ def defaultRun():
     readAndCopy(dest_dir, dest_file, "w")
 
 
-if len(sys.argv) > 2 and sys.argv[1] == "-i":
-    # Extracts image name from the runtime
-    image = sys.argv[2]
-    generateData(image)
-    if len(sys.argv) > 3:
-        # Extracts run mode from the runtime and compares with the conditions
-        run_mode = sys.argv[3]
-        if run_mode == "baseline":
-            baseLine()
-        elif run_mode == "update-baseline":
-            updateBaseLine()
-        elif run_mode == "testrun":
-            if len(sys.argv) > 5:
-                # Extracts baseline version to be comapred
-                baseline_version = sys.argv[4]
-                build = sys.argv[5]
-                print("test_run mode with values ", baseline_version, build)
-                testRun(baseline_version, build)
+def runBuild(args):
+    if len(args) > 2 and args[1] == "-i":
+        # Extracts image name from the runtime
+        image = args[2]
+        generateData(image)
+        if len(args) > 3:
+            # Extracts run mode from the runtime and compares with the conditions
+            run_mode = args[3]
+            if run_mode == "baseline":
+                baseLine()
+            elif run_mode == "update-baseline":
+                updateBaseLine()
+            elif run_mode == "testrun":
+                if len(args) > 5:
+                    # Extracts baseline version to be comapred
+                    baseline_version = args[4]
+                    build = args[5]
+                    print("test_run mode with values ", baseline_version, build)
+                    testRun(baseline_version, build)
+                else:
+                    print("Enter the correct test run built")
             else:
-                print("Enter the correct test run built")
+                print("Invalid run mode")
         else:
-            print("Invalid run mode")
+            # Executes when no run mode is specified, only image is specified with the -i flag
+            defaultRun()
     else:
-        # Executes when no run mode is specified, only image is specified with the -i flag
-        defaultRun()
-else:
-    print("Invalid command. Please specify the image file using -i flag")
+        print("Invalid command. Please specify the image file using -i flag")
+
+
+# Main function/Starting point for execution
+def run():
+    if checkBaseDir():
+        runBuild(sys.argv)
+    else:
+        print("Unable to find/create/permission denied for the base directory")
+
+
+run()
