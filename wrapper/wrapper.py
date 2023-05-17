@@ -24,7 +24,7 @@ def checkBaseDir():
             # os.makedirs(base_dir, exist_ok=True)
             try:
                 os.makedirs(base_dir)
-            except FileExistsError:
+            except:
                 pass
             return True
         except:
@@ -62,7 +62,7 @@ def baseLine():
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except FileExistsError:
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
@@ -74,7 +74,7 @@ def updateBaseLine():
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except FileExistsError:
+    except:
         pass
     dest_file = os.path.join(dest_dir, "baselined_values.csv")
     readAndCopy(dest_dir, dest_file, "w")
@@ -85,7 +85,7 @@ def testRun(baseline_version, build):
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except FileExistsError:
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
@@ -99,7 +99,7 @@ def defaultRun():
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except FileExistsError:
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
