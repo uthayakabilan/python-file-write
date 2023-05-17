@@ -21,7 +21,11 @@ def checkBaseDir():
         return True
     else:
         try:
-            os.makedirs(base_dir, exist_ok=True)
+            # os.makedirs(base_dir, exist_ok=True)
+            try:
+                os.makedirs(base_dir)
+            except FileExistsError:
+                pass
             return True
         except:
             return False
@@ -55,7 +59,11 @@ def readAndCopy(dest_dir, dest_file, mode="w", source_file=base_log_file_dir):
 
 def baseLine():
     dest_dir = os.path.join(base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
-    os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
+    try:
+        os.makedirs(dest_dir)
+    except FileExistsError:
+        pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
     readAndCopy(dest_dir, dest_file, "w")
@@ -63,14 +71,22 @@ def baseLine():
 
 def updateBaseLine():
     dest_dir = os.path.join(base_dir, "Multicast", "Baseline", "BaselinedValues")
-    os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
+    try:
+        os.makedirs(dest_dir)
+    except FileExistsError:
+        pass
     dest_file = os.path.join(dest_dir, "baselined_values.csv")
     readAndCopy(dest_dir, dest_file, "w")
 
 
 def testRun(baseline_version, build):
     dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
-    os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
+    try:
+        os.makedirs(dest_dir)
+    except FileExistsError:
+        pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
     # Compare functionality
@@ -80,7 +96,11 @@ def testRun(baseline_version, build):
 
 def defaultRun():
     dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
-    os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
+    try:
+        os.makedirs(dest_dir)
+    except FileExistsError:
+        pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
     readAndCopy(dest_dir, dest_file, "w")
