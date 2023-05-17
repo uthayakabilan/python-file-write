@@ -2,11 +2,13 @@ import sys
 import os
 
 # path to the root log file
-root_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/"
+directory_path = (
+    "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/"
+)
+file_path = os.path.join(directory_path, "log_file.csv")
 
-if os.path.exists(root_dir):
-    log_file = os.path.join(root_dir, "log_file.csv")
-    f = open(log_file, "w")
+if os.path.exists(directory_path):
+    f = open(file_path, "w")
     # Log file is created to store the data. Log file will be automatically removed once the data is moved
     try:
         f.write("Hello from the image: {}".format(sys.argv[1]))
