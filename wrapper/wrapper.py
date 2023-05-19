@@ -1,12 +1,13 @@
 import os
 import sys
+from analysis import getLowestValue
 
 # from datetime import date
 # Import tiem for current date in python 2
 import time
 
 # Base ht command, format image_name with specified image
-base_cmd = "/usr/bin/python3 /Users/kabil/Desktop/Files/Playground/python-file-write/write-code/generateData.py {image_name}"
+base_cmd = "/usr/bin/python3 /Users/kabil/Desktop/Files/Playground/python-file-write/write-code/generateData.py {rsvn_id} -i {image_name}"
 # Base directory
 base_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/"
 # Base directory of the main log file
@@ -32,13 +33,20 @@ def checkBaseDir():
 
 
 # utility function to run the ht command to generate the data with the specified image name
-def generateData(image):
-    ht_cmd = base_cmd.format(image_name=image)
+def generateData(image, rsvnId=False):
+    if rsvnId != False:
+        id = "-rsvnId " + rsvnId
+        ht_cmd = base_cmd.format(image_name=image, rsvn_id=id)
+    else:
+        ht_cmd = base_cmd.format(image_name=image, rsvn_id="")
+    print(ht_cmd)
     os.system(ht_cmd)
 
 
 # utility function to copy contents from source to destination
-def readAndCopy(dest_dir, dest_file, mode="w", source_file=base_log_file_dir):
+def readAndCopy(
+    dest_dir, dest_file, mode="w", source_file=base_log_file_dir, deleteSource=False
+):
     if os.path.exists(source_file):
         if os.path.exists(dest_dir):
             sourceFile = open(source_file, "r")
@@ -47,8 +55,8 @@ def readAndCopy(dest_dir, dest_file, mode="w", source_file=base_log_file_dir):
                 destFile.write(line)
             sourceFile.close()
             destFile.close()
-            os.remove(source_file)
-            # Log file removed after copying the data
+            if deleteSource:
+                os.remove(source_file)
         else:
             print(
                 "Destination does not exist. Please check the path to the destination directory"
@@ -80,6 +88,24 @@ def updateBaseLine():
     readAndCopy(dest_dir, dest_file, "w")
 
 
+def updateBuildBaseLine(build):
+    dest_dir = os.path.join(
+        base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ", "BaselinedValue"
+    )
+    try:
+        os.makedirs(dest_dir)
+    except:
+        pass
+    dest_file = os.path.join(dest_dir, "baselined_10_12.csv")
+    # get lowest value
+    lowest_file_dir = os.path.join(base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
+    source_file = getLowestValue(lowest_file_dir)
+    if source_file == "no file found":
+        print("No file found in: ", lowest_file_dir)
+    else:
+        readAndCopy(dest_dir, dest_file, "w", source_file=source_file)
+
+
 def testRun(baseline_version, build):
     dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -106,18 +132,41 @@ def defaultRun():
     readAndCopy(dest_dir, dest_file, "w")
 
 
+def removeRsvnId(args):
+    isRsvn = False
+    rsvnIndex = 0
+    arg_list = args
+    for x in range(0, len(args)):
+        if "-rsvnId" in args[x]:
+            isRsvn = True
+            rsvnIndex = x
+    if isRsvn:
+        arg_list = args[:rsvnIndex]
+    return arg_list, isRsvn, args[rsvnIndex + 1]
+
+
 def runBuild(args):
     if len(args) > 2 and args[1] == "-i":
+        args, isRsvn, rsvnId = removeRsvnId(args)
+        print(args, isRsvn, rsvnId)
         # Extracts image name from the runtime
         image = args[2]
-        generateData(image)
+        print(image)
+        if isRsvn:
+            generateData(image, rsvnId)
+        else:
+            generateData(image)
         if len(args) > 3:
             # Extracts run mode from the runtime and compares with the conditions
             run_mode = args[3]
             if run_mode == "baseline":
                 baseLine()
             elif run_mode == "update-baseline":
-                updateBaseLine()
+                if len(args) > 4:
+                    build = args[4]
+                    updateBuildBaseLine(build)
+                else:
+                    updateBaseLine()
             elif run_mode == "testrun":
                 if len(args) > 5:
                     # Extracts baseline version to be comapred

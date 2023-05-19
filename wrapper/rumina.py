@@ -4,14 +4,13 @@ import sys
 import time
 
 # Base ht command, format image_name with specified image
-base_cmd =  "ht -t ft_PIM_SM_Verifying_C_Rp_Adv_Msg_and_Generation_L3Vlan_DefaultVrf -h 8400 -v -i /aruba/pub/{image_name} -halonRoot /ws/rrru/halon1/halon"
+base_cmd = "/usr/bin/python3 /Users/kabil/Desktop/Files/Playground/python-file-write/write-code/generateData.py {image_name}"
 # Base directory
-base_dir = "/aruba/pub/CX-Health-Monitor/"
+base_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/"
 # Base directory of the main log file
-base_log_file_dir = "/aruba/pub/CX-Health-Monitor/Multicast/log_file.csv"
+base_log_file_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/cx-health-monitor/log_file.csv"
 # Current_date used instead of date.today() for python2
 current_date = time.strftime("%Y-%m-%d")
-
 
 
 # Function to create base directory if it does not exixts
@@ -61,7 +60,7 @@ def baseLine():
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except :
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
@@ -72,10 +71,10 @@ def baseLine():
 
 def updateBaseLine():
     dest_dir = os.path.join(base_dir, "Multicast", "Baseline", "BaselinedValues")
-     # os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except :
+    except:
         pass
     dest_file = os.path.join(dest_dir, "baselined_values.csv")
     readAndCopy(dest_dir, dest_file, "w")
@@ -86,7 +85,7 @@ def testRun(baseline_version, build):
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except :
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
@@ -97,10 +96,10 @@ def testRun(baseline_version, build):
 
 def defaultRun():
     dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
-     # os.makedirs(dest_dir, exist_ok=True)
+    # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
-    except :
+    except:
         pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
