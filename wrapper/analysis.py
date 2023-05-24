@@ -13,23 +13,26 @@ def filterFileExtension(dir_path, ext):
     return filtered_list
 
 
-#'0:05:14.380000'
+# '0:05:14.380000'
 def parseUTILTime(time):
     replacedString = time.replace(":", ".")
     replacedString = replacedString.split(".")
     totalTime = 0
     if len(replacedString) == 4:
-        totalTime = totalTime + int(replacedString[0]) * 3600000  # hours to millisecond
+        # hours to millisecond
+        totalTime = totalTime + int(replacedString[0]) * 3600000
         totalTime = (
             totalTime + int(replacedString[1]) * 60000
         )  # minutes to milliseconds
-        totalTime = totalTime + int(replacedString[2]) * 1000  # seconds to milliseconds
+        # seconds to milliseconds
+        totalTime = totalTime + int(replacedString[2]) * 1000
         totalTime = totalTime + int(replacedString[3])
     elif len(replacedString) == 3:
         totalTime = (
             totalTime + int(replacedString[0]) * 60000
         )  # minutes to milliseconds
-        totalTime = totalTime + int(replacedString[1]) * 1000  # seconds to milliseconds
+        # seconds to milliseconds
+        totalTime = totalTime + int(replacedString[1]) * 1000
         totalTime = totalTime + int(replacedString[2])
     return totalTime
 

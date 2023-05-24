@@ -34,7 +34,7 @@ def checkBaseDir():
 
 # utility function to run the ht command to generate the data with the specified image name
 def generateData(image, rsvnId=False):
-    if rsvnId != False:
+    if rsvnId:
         id = "-rsvnId " + rsvnId
         ht_cmd = base_cmd.format(image_name=image, rsvn_id=id)
     else:
@@ -66,7 +66,8 @@ def readAndCopy(
 
 
 def baseLine():
-    dest_dir = os.path.join(base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
+    dest_dir = os.path.join(base_dir, "Multicast",
+                            "Baseline", "XX_10_12_0001AJ")
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
@@ -78,7 +79,8 @@ def baseLine():
 
 
 def updateBaseLine():
-    dest_dir = os.path.join(base_dir, "Multicast", "Baseline", "BaselinedValues")
+    dest_dir = os.path.join(base_dir, "Multicast",
+                            "Baseline", "BaselinedValues")
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
@@ -98,7 +100,8 @@ def updateBuildBaseLine(build):
         pass
     dest_file = os.path.join(dest_dir, "baselined_10_12.csv")
     # get lowest value
-    lowest_file_dir = os.path.join(base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
+    lowest_file_dir = os.path.join(
+        base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
     source_file = getLowestValue(lowest_file_dir)
     if source_file == "no file found":
         print("No file found in: ", lowest_file_dir)
@@ -107,7 +110,8 @@ def updateBuildBaseLine(build):
 
 
 def testRun(baseline_version, build):
-    dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
+    dest_dir = os.path.join(base_dir, "Multicast",
+                            "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
@@ -121,7 +125,8 @@ def testRun(baseline_version, build):
 
 
 def defaultRun():
-    dest_dir = os.path.join(base_dir, "Multicast", "TestRun", "XX_10_12_1000BD")
+    dest_dir = os.path.join(base_dir, "Multicast",
+                            "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
@@ -172,7 +177,8 @@ def runBuild(args):
                     # Extracts baseline version to be comapred
                     baseline_version = args[4]
                     build = args[5]
-                    print("test_run mode with values ", baseline_version, build)
+                    print("test_run mode with values ",
+                          baseline_version, build)
                     testRun(baseline_version, build)
                 else:
                     print("Enter the correct test run built")
