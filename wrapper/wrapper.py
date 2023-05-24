@@ -50,12 +50,12 @@ def read_and_copy(
 ):
     if os.path.exists(source_file):
         if os.path.exists(dest_dir):
-            sourceFile = open(source_file, "r")
-            destFile = open(dest_file, mode)
-            for line in sourceFile:
-                destFile.write(line)
-            sourceFile.close()
-            destFile.close()
+            open_source_file = open(source_file, "r")
+            open_dest_file = open(dest_file, mode)
+            for line in open_source_file:
+                open_dest_file.write(line)
+            open_source_file.close()
+            open_dest_file.close()
             if delete_source:
                 os.remove(source_file)
         else:
