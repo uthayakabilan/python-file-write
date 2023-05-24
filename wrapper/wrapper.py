@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 import os
 import sys
-from analysis import getLowestValue
+from analysis import get_lowest_value
 
 # from datetime import date
 # Import tiem for current date in python 2
@@ -17,7 +18,7 @@ current_date = time.strftime("%Y-%m-%d")
 
 
 # Function to create base directory if it does not exixts
-def checkBaseDir():
+def check_base_dir():
     if os.path.exists(base_dir):
         return True
     else:
@@ -33,9 +34,9 @@ def checkBaseDir():
 
 
 # utility function to run the ht command to generate the data with the specified image name
-def generateData(image, rsvnId=False):
-    if rsvnId:
-        id = "-rsvnId " + rsvnId
+def generate_data(image, rsvn_id=False):
+    if rsvn_id:
+        id = "-rsvnId " + rsvn_id
         ht_cmd = base_cmd.format(image_name=image, rsvn_id=id)
     else:
         ht_cmd = base_cmd.format(image_name=image, rsvn_id="")
@@ -44,8 +45,8 @@ def generateData(image, rsvnId=False):
 
 
 # utility function to copy contents from source to destination
-def readAndCopy(
-    dest_dir, dest_file, mode="w", source_file=base_log_file_dir, deleteSource=False
+def read_and_copy(
+    dest_dir, dest_file, mode="w", source_file=base_log_file_dir, delete_source=False
 ):
     if os.path.exists(source_file):
         if os.path.exists(dest_dir):
@@ -55,7 +56,7 @@ def readAndCopy(
                 destFile.write(line)
             sourceFile.close()
             destFile.close()
-            if deleteSource:
+            if delete_source:
                 os.remove(source_file)
         else:
             print(
@@ -65,7 +66,7 @@ def readAndCopy(
         print("Source file does not exist. Please check the path to the source file")
 
 
-def baseLine():
+def baseline():
     dest_dir = os.path.join(base_dir, "Multicast",
                             "Baseline", "XX_10_12_0001AJ")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -75,10 +76,10 @@ def baseLine():
         pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
-    readAndCopy(dest_dir, dest_file, "w")
+    read_and_copy(dest_dir, dest_file, "w")
 
 
-def updateBaseLine():
+def update_baseline():
     dest_dir = os.path.join(base_dir, "Multicast",
                             "Baseline", "BaselinedValues")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -87,10 +88,10 @@ def updateBaseLine():
     except:
         pass
     dest_file = os.path.join(dest_dir, "baselined_values.csv")
-    readAndCopy(dest_dir, dest_file, "w")
+    read_and_copy(dest_dir, dest_file, "w")
 
 
-def updateBuildBaseLine(build):
+def update_build_baseline(build):
     dest_dir = os.path.join(
         base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ", "BaselinedValue"
     )
@@ -102,14 +103,14 @@ def updateBuildBaseLine(build):
     # get lowest value
     lowest_file_dir = os.path.join(
         base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ")
-    source_file = getLowestValue(lowest_file_dir)
+    source_file = get_lowest_value(lowest_file_dir)
     if source_file == "no file found":
         print("No file found in: ", lowest_file_dir)
     else:
-        readAndCopy(dest_dir, dest_file, "w", source_file=source_file)
+        read_and_copy(dest_dir, dest_file, "w", source_file=source_file)
 
 
-def testRun(baseline_version, build):
+def test_run(baseline_version, build):
     dest_dir = os.path.join(base_dir, "Multicast",
                             "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -120,11 +121,11 @@ def testRun(baseline_version, build):
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
     # Compare functionality
-    readAndCopy(dest_dir, dest_file, "w")
+    read_and_copy(dest_dir, dest_file, "w")
     print(baseline_version, build)
 
 
-def defaultRun():
+def default_run():
     dest_dir = os.path.join(base_dir, "Multicast",
                             "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -134,44 +135,44 @@ def defaultRun():
         pass
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
-    readAndCopy(dest_dir, dest_file, "w")
+    read_and_copy(dest_dir, dest_file, "w")
 
 
-def removeRsvnId(args):
-    isRsvn = False
-    rsvnIndex = 0
+def remove_rsvn_id(args):
+    is_rsvn = False
+    rsvn_index = 0
     arg_list = args
     for x in range(0, len(args)):
         if "-rsvnId" in args[x]:
-            isRsvn = True
-            rsvnIndex = x
-    if isRsvn:
-        arg_list = args[:rsvnIndex]
-    return arg_list, isRsvn, args[rsvnIndex + 1]
+            is_rsvn = True
+            rsvn_index = x
+    if is_rsvn:
+        arg_list = args[:rsvn_index]
+    return arg_list, is_rsvn, args[rsvn_index + 1]
 
 
-def runBuild(args):
+def run_build(args):
     if len(args) > 2 and args[1] == "-i":
-        args, isRsvn, rsvnId = removeRsvnId(args)
-        print(args, isRsvn, rsvnId)
+        args, is_rsvn, rsvn_id = remove_rsvn_id(args)
+        print(args, is_rsvn, rsvn_id)
         # Extracts image name from the runtime
         image = args[2]
         print(image)
-        if isRsvn:
-            generateData(image, rsvnId)
+        if is_rsvn:
+            generate_data(image, rsvn_id)
         else:
-            generateData(image)
+            generate_data(image)
         if len(args) > 3:
             # Extracts run mode from the runtime and compares with the conditions
             run_mode = args[3]
             if run_mode == "baseline":
-                baseLine()
+                baseline()
             elif run_mode == "update-baseline":
                 if len(args) > 4:
                     build = args[4]
-                    updateBuildBaseLine(build)
+                    update_build_baseline(build)
                 else:
-                    updateBaseLine()
+                    update_baseline()
             elif run_mode == "testrun":
                 if len(args) > 5:
                     # Extracts baseline version to be comapred
@@ -179,22 +180,22 @@ def runBuild(args):
                     build = args[5]
                     print("test_run mode with values ",
                           baseline_version, build)
-                    testRun(baseline_version, build)
+                    test_run(baseline_version, build)
                 else:
                     print("Enter the correct test run built")
             else:
                 print("Invalid run mode")
         else:
             # Executes when no run mode is specified, only image is specified with the -i flag
-            defaultRun()
+            default_run()
     else:
         print("Invalid command. Please specify the image file using -i flag")
 
 
 # Main function/Starting point for execution
 def run():
-    if checkBaseDir():
-        runBuild(sys.argv)
+    if check_base_dir():
+        run_build(sys.argv)
     else:
         print("Unable to find/create/permission denied for the base directory")
 
