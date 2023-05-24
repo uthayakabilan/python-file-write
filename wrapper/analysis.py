@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 import os
 import csv
 
 
-def filterFileExtension(dir_path, ext):
+def filter_file_extension(dir_path, ext):
     file_list = os.listdir(dir_path)
     filtered_list = []
     for file in file_list:
@@ -14,31 +15,31 @@ def filterFileExtension(dir_path, ext):
 
 
 # '0:05:14.380000'
-def parseUTILTime(time):
-    replacedString = time.replace(":", ".")
-    replacedString = replacedString.split(".")
-    totalTime = 0
-    if len(replacedString) == 4:
+def parse_util_time(time):
+    replaced_string = time.replace(":", ".")
+    replaced_string = replaced_string.split(".")
+    total_time = 0
+    if len(replaced_string) == 4:
         # hours to millisecond
-        totalTime = totalTime + int(replacedString[0]) * 3600000
-        totalTime = (
-            totalTime + int(replacedString[1]) * 60000
+        total_time = total_time + int(replaced_string[0]) * 3600000
+        total_time = (
+            total_time + int(replaced_string[1]) * 60000
         )  # minutes to milliseconds
         # seconds to milliseconds
-        totalTime = totalTime + int(replacedString[2]) * 1000
-        totalTime = totalTime + int(replacedString[3])
-    elif len(replacedString) == 3:
-        totalTime = (
-            totalTime + int(replacedString[0]) * 60000
+        total_time = total_time + int(replaced_string[2]) * 1000
+        total_time = total_time + int(replaced_string[3])
+    elif len(replaced_string) == 3:
+        total_time = (
+            total_time + int(replaced_string[0]) * 60000
         )  # minutes to milliseconds
         # seconds to milliseconds
-        totalTime = totalTime + int(replacedString[1]) * 1000
-        totalTime = totalTime + int(replacedString[2])
-    return totalTime
+        total_time = total_time + int(replaced_string[1]) * 1000
+        total_time = total_time + int(replaced_string[2])
+    return total_time
 
 
-def getLowestValue(file_dir):
-    csv_files = filterFileExtension(file_dir, "csv")
+def get_lowest_value(file_dir):
+    csv_files = filter_file_extension(file_dir, "csv")
     lowest_memory_file = []
     if len(csv_files) == 1:
         return os.path.join(file_dir, csv_files[0])
@@ -48,14 +49,14 @@ def getLowestValue(file_dir):
         for filename in csv_files:
             data = []
             with open(os.path.join(file_dir, filename), "r") as file:
-                csvFile = csv.reader(file)
+                csv_file = csv.reader(file)
                 memory_usage = 0
                 cpu_util = 0
-                for line in csvFile:
+                for line in csv_file:
                     if "Memory_Usage" in line[1]:
                         memory_usage = memory_usage + float(line[2])
                     if "cpu_UTIL" in line[1]:
-                        time = parseUTILTime(line[2])
+                        time = parse_util_time(line[2])
                         cpu_util = cpu_util + time
                 # print(file.name, __name__, memory_usage, cpu_util)
                 data.append(file.name)
