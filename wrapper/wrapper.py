@@ -33,6 +33,22 @@ def check_base_dir():
             return False
 
 
+def wait_till_file(path, timer=3600, interval=60):
+    if (timer <= 0):
+        print("timer ended")
+        return False
+    print("timer remaining.. ", timer)
+    print("retrying in.. ", interval)
+    if (os.path.exists(path)):
+        print("Path exists ... ")
+        time.sleep(60)
+        print("File found")
+        return True
+    else:
+        time.sleep(interval)
+        return wait_till_file(path, timer-interval, interval)
+
+
 # utility function to run the ht command to generate the data with the specified image name
 def generate_data(image, rsvn_id=False):
     if rsvn_id:
@@ -48,7 +64,7 @@ def generate_data(image, rsvn_id=False):
 def read_and_copy(
     dest_dir, dest_file, mode="w", source_file=base_log_file_dir, delete_source=False
 ):
-    if os.path.exists(source_file):
+    if wait_till_file(source_file):
         if os.path.exists(dest_dir):
             open_source_file = open(source_file, "r")
             open_dest_file = open(dest_file, mode)
@@ -57,6 +73,8 @@ def read_and_copy(
             open_source_file.close()
             open_dest_file.close()
             if delete_source:
+                time.sleep(60)
+                print("Source file deleted")
                 os.remove(source_file)
         else:
             print(
@@ -76,7 +94,7 @@ def baseline():
         pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
-    read_and_copy(dest_dir, dest_file, "w")
+    read_and_copy(dest_dir, dest_file, "w", delete_source=True)
 
 
 def update_baseline():
