@@ -1,0 +1,17 @@
+Node,Metric,Value
+router1,rus_log - Memory_Usage,2.0
+router1,rus_log - cpu_UTIL,0:10:21.370000
+router1,rus_log - EVENT_err,0
+router1,rus_log - EVENT_wrn,0
+router1,rus_log - Messages_error,83
+router1,rus_log - Messages_warn,83
+router1,rud_log - EVENT_err,0
+router1,rud_log - EVENT_WARN,0
+router2,rus_log - Memory_Usage,2.0
+router2,rus_log - cpu_UTIL,0:05:01.260000
+router2,rus_log - EVENT_err,0
+router2,rus_log - EVENT_wrn,0
+router2,rus_log - Messages_error,84
+router2,rus_log - Messages_warn,84
+router2,rud_log - EVENT_err,0
+router2,rud_log - EVENT_WARN,0

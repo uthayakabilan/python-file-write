@@ -2,8 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Read the CSV files
-baseline_df = pd.read_csv('baseline.csv')
-compare_df = pd.read_csv('compare.csv')
+baseline_df = pd.read_csv(
+    '/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/baseline.csv')
+compare_df = pd.read_csv(
+    '/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/compare.csv')
 
 # Get unique metrics
 baseline_metrics = baseline_df['Metric'].unique()
@@ -22,9 +24,15 @@ for metric in unique_metrics:
 
     # Create a new figure and plot the bar graph
     plt.figure(figsize=(6, 4))
-    plt.bar(['Baseline', 'Compare'], [baseline_values[0], compare_values[0]])
+    plt.bar(['Baseline', 'Compare'], [
+            baseline_values[0][0], compare_values[0][0]])
     plt.xlabel('Dataset')
     plt.ylabel('Value')
     plt.title(f'{metric} Comparison')
     plt.show()
+    print(baseline_values, compare_values)
 
+x = ["APPLES", "BANANAS"]
+y = [400, 350]
+plt.bar(x, y)
+plt.show()

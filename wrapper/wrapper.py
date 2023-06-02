@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 import os
 import sys
 from analysis import get_lowest_value
@@ -95,6 +95,7 @@ def baseline():
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
     read_and_copy(dest_dir, dest_file, "w", delete_source=True)
+    update_build_baseline()
 
 
 def update_baseline():
