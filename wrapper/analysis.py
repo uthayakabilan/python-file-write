@@ -81,7 +81,9 @@ def create_object_template(router_list):
 
 
 def get_color(val):
-    val1, val2, *other = val
+    val1, val2, *others = val
+    val1 = val[0]
+    val2 = val[1]
     try:
         val1 = int(val[0])
         val2 = int(val[1])
@@ -113,7 +115,9 @@ def plot_and_save(data, filename):
             plt.rc('ytick', labelsize=5)
             plt.xticks(fontsize=4)
             plt.yticks(fontsize=4)
-            plt.title(f'{router} {metric} comparison', fontdict=font1)
+            # plt.title(f'{router} {metric} comparison', fontdict=font1)
+            plt.title("{} {} comparison".format(
+                router, metric), fontdict=font1)
             color = get_color(data[router][metric])
             try:
                 plt.subplot(3, 3, i)
