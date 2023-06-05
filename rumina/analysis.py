@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import os
 import csv
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 
 def filter_file_extension(dir_path, ext):
@@ -65,3 +68,35 @@ def get_lowest_value(file_dir):
             lowest_memory_file.append(data)
         lowest_memory_file.sort(key=lambda x: (x[1], x[2]))
     return lowest_memory_file[0][0]
+
+
+def plot_graph(baseline_dir, compare_dir):
+    baseline_df = pd.read_csv(baseline_dir)
+    compare_df = pd.read_csv(compare_dir)
+    # save_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/graphs/"
+    baseline_metrics = baseline_df['Metric'].unique()
+    compare_metrics = compare_df['Metric'].unique()
+    unique_metrics = set(baseline_metrics).union(compare_metrics)
+
+    for metric in unique_metrics:
+        baseline_data = baseline_df[baseline_df['Metric'] == metric]
+        compare_data = compare_df[compare_df['Metric'] == metric]
+        baseline_values = baseline_data['Value'].tolist()
+        baseline_router = baseline_data['Node'].tolist()
+        compare_values = compare_data['Value'].tolist()
+        compare_router = compare_data['Node'].tolist()
+        for i in range(0, len(baseline_router or compare_router)):
+            bar = plt.figure()
+            try:
+                plt.bar(['Baseline', 'Compare'], [
+                    float(baseline_values[i]), float(compare_values[i])])
+            except ValueError:
+                plt.bar(['Baseline', 'Compare'], [
+                    parse_util_time(baseline_values[i]), parse_util_time(compare_values[i])])
+            plt.title(
+                f'{baseline_router[i]} {metric} Comparison')
+            # plt.savefig(f'./{baseline_router[i]} {metric} Comparison.png')
+            pdf_file = PdfPages('plots.pdf')
+            pdf_file.savefig(bar)
+            # plt.show()
+            plt.close()

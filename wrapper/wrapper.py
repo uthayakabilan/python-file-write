@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 import os
 import sys
-from analysis import get_lowest_value
+from analysis import get_lowest_value, plot_graph
 
 # from datetime import date
 # Import tiem for current date in python 2
@@ -32,8 +32,10 @@ def check_base_dir():
         except:
             return False
 
+# timer value changed for testing
 
-def wait_till_file(path, timer=3600, interval=60):
+
+def wait_till_file(path, timer=1, interval=1):
     if (timer <= 0):
         print("timer ended")
         return False
@@ -41,7 +43,7 @@ def wait_till_file(path, timer=3600, interval=60):
     print("retrying in.. ", interval)
     if (os.path.exists(path)):
         print("Path exists ... ")
-        time.sleep(60)
+        # time.sleep(60)
         print("File found")
         return True
     else:
@@ -64,7 +66,7 @@ def generate_data(image, rsvn_id=False):
 def read_and_copy(
     dest_dir, dest_file, mode="w", source_file=base_log_file_dir, delete_source=False
 ):
-    if wait_till_file(source_file):
+    if os.path.exists(source_file):
         if os.path.exists(dest_dir):
             open_source_file = open(source_file, "r")
             open_dest_file = open(dest_file, mode)
@@ -73,7 +75,6 @@ def read_and_copy(
             open_source_file.close()
             open_dest_file.close()
             if delete_source:
-                time.sleep(60)
                 print("Source file deleted")
                 os.remove(source_file)
         else:
@@ -94,8 +95,16 @@ def baseline():
         pass
     # dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "baseline_{}.csv".format(current_date))
-    read_and_copy(dest_dir, dest_file, "w", delete_source=True)
-    update_build_baseline()
+    read_and_copy(dest_dir, dest_file, "w")
+    update_build_baseline("test_image")
+    baselined_base_dir = os.path.join(
+        base_dir, "Multicast", "Baseline", "XX_10_12_0001AJ", "BaselinedValue"
+    )
+    baselined_file = os.path.join(baselined_base_dir, "baselined_10_12.csv")
+    summary_file = os.path.join(
+        base_dir, "baseline_summary_{}.pdf".format(current_date))
+    plot_graph(baseline_dir=baselined_file, compare_dir=dest_file,
+               filename=summary_file)
 
 
 def update_baseline():

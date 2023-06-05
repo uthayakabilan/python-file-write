@@ -1,74 +1,7 @@
-#!/usr/bin/env python
-import os
-import csv
+from analysis import parse_util_time
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-
-
-def filter_file_extension(dir_path, ext):
-    file_list = os.listdir(dir_path)
-    filtered_list = []
-    for file in file_list:
-        if "." in file:
-            split_file = file.split(".")
-            if split_file[-1] == ext:
-                filtered_list.append(file)
-    return filtered_list
-
-
-# '0:05:14.380000'
-def parse_util_time(time):
-    replaced_string = time.replace(":", ".")
-    replaced_string = replaced_string.split(".")
-    total_time = 0
-    if len(replaced_string) == 4:
-        # hours to millisecond
-        total_time = total_time + int(replaced_string[0]) * 3600000
-        total_time = (
-            total_time + int(replaced_string[1]) * 60000
-        )  # minutes to milliseconds
-        # seconds to milliseconds
-        total_time = total_time + int(replaced_string[2]) * 1000
-        total_time = total_time + int(replaced_string[3])
-    elif len(replaced_string) == 3:
-        total_time = (
-            total_time + int(replaced_string[0]) * 60000
-        )  # minutes to milliseconds
-        # seconds to milliseconds
-        total_time = total_time + int(replaced_string[1]) * 1000
-        total_time = total_time + int(replaced_string[2])
-    return total_time
-
-
-def get_lowest_value(file_dir):
-    csv_files = filter_file_extension(file_dir, "csv")
-    lowest_memory_file = []
-    if len(csv_files) == 1:
-        return os.path.join(file_dir, csv_files[0])
-    elif len(csv_files) == 0:
-        return "no file found"
-    else:
-        for filename in csv_files:
-            data = []
-            with open(os.path.join(file_dir, filename), "r") as file:
-                csv_file = csv.reader(file)
-                memory_usage = 0
-                cpu_util = 0
-                for line in csv_file:
-                    if "Memory_Usage" in line[1]:
-                        memory_usage = memory_usage + float(line[2])
-                    if "cpu_UTIL" in line[1]:
-                        time = parse_util_time(line[2])
-                        cpu_util = cpu_util + time
-                # print(file.name, __name__, memory_usage, cpu_util)
-                data.append(file.name)
-                data.append(memory_usage)
-                data.append(cpu_util)
-            lowest_memory_file.append(data)
-        lowest_memory_file.sort(key=lambda x: (x[1], x[2]))
-    return lowest_memory_file[0][0]
-
 
 font1 = {'family': 'serif', 'color': 'black', 'size': 4}
 
@@ -89,6 +22,7 @@ def get_color(val):
         val1 = parse_util_time(val[0])
         val2 = parse_util_time(val[1])
     if (val1 == 0 and val2 == 0):
+        # print(val1, val2)
         return 'black'
     if (val1 == val2):
         return 'green'
@@ -101,8 +35,10 @@ def get_color(val):
         return 'red'
 
 
-def plot_and_save(data, filename):
-    pp = PdfPages(filename)
+def plot_and_save(data):
+    pp = PdfPages("subplot.pdf")
+    # plt.figure(figsize=(3, 3))
+    # plt.figure()
     for router in data:
         plt.figure(figsize=(3, 3))
         plt.figure()
@@ -114,6 +50,7 @@ def plot_and_save(data, filename):
             plt.xticks(fontsize=4)
             plt.yticks(fontsize=4)
             plt.title(f'{router} {metric} comparison', fontdict=font1)
+            # plt.subplot(3, 3, i)
             color = get_color(data[router][metric])
             try:
                 plt.subplot(3, 3, i)
@@ -125,6 +62,8 @@ def plot_and_save(data, filename):
                 ax = plt.bar(['Baseline', 'Compare'], [
                     parse_util_time(data[router][metric][0])*1000, parse_util_time(data[router][metric][1])*1000], width=0.45, color=['blue', color])
                 axes.append(ax)
+            # print(metric)
+            # print(data[router][metric])
             i = i + 1
         plt.subplots_adjust(left=0.2,
                             bottom=0.2,
@@ -135,12 +74,14 @@ def plot_and_save(data, filename):
         plt.savefig(pp, format='pdf')
         for x in range(0, len(axes)):
             plt.delaxes(axes[x])
+        # plt.show()
     pp.close()
 
 
 def plot_graph(baseline_dir, compare_dir, filename='sumamry.pdf'):
     baseline_df = pd.read_csv(baseline_dir)
     compare_df = pd.read_csv(compare_dir)
+    # save_dir = "/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/graphs/"
     baseline_metrics = baseline_df['Metric'].unique()
     compare_metrics = compare_df['Metric'].unique()
     unique_metrics = set(baseline_metrics).union(compare_metrics)
@@ -149,9 +90,14 @@ def plot_graph(baseline_dir, compare_dir, filename='sumamry.pdf'):
     for metric in unique_metrics:
         baseline_data = baseline_df[baseline_df['Metric'] == metric]
         compare_data = compare_df[compare_df['Metric'] == metric]
+        # values from the data frame
         baseline_values = baseline_data['Value'].tolist()
         compare_values = compare_data['Value'].tolist()
         for i in range(0, len(baseline_routers)):
             data[baseline_routers[i]][metric] = [
                 baseline_values[i], compare_values[i]]
-    plot_and_save(data, filename)
+    plot_and_save(data)
+
+
+plot_graph(baseline_dir="/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/baseline.csv",
+           compare_dir="/Users/kabil/Desktop/Files/Playground/python-file-write/wrapper/resources/compare.csv")
