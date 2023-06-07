@@ -111,6 +111,7 @@ def plot_and_save(data, filename):
     for router in data:
         # plt.figure(figsize=(3, 3))
         axes = []
+        bar_texts = []
         i = 1
         for metric in data[router]:
             plt.rc('xtick', labelsize=5)
@@ -130,6 +131,11 @@ def plot_and_save(data, filename):
                     router, metric), fontdict=font1)
                 print(metric, float(data[router][metric][0]), float(
                     data[router][metric][1]), i)
+                text1 = plt.text(0, float(data[router][metric][0])//2, float(
+                    data[router][metric][0]), ha='center', fontsize=4, color="black", fontweight="bold")
+                text2 = plt.text(1, float(data[router][metric][1])//2, float(
+                    data[router][metric][1]), ha='center', fontsize=4, color="black", fontweight="bold")
+                bar_texts.append([text1, text2])
             except ValueError:
                 plt.subplot(3, 3, i)
                 ax = plt.bar(['Baseline', 'Compare'], [
@@ -139,6 +145,11 @@ def plot_and_save(data, filename):
                     router, metric), fontdict=font1)
                 print(metric, parse_util_time(
                     data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000, i)
+                text1 = plt.text(0, (parse_util_time(data[router][metric][0])/1000)//2, (parse_util_time(
+                    data[router][metric][0])/1000), ha='center', fontsize=4, color="black", fontweight="bold")
+                text2 = plt.text(1, (parse_util_time(data[router][metric][1])/1000)//2, (parse_util_time(
+                    data[router][metric][1])/1000), ha='center', fontsize=4, color="black", fontweight="bold")
+                bar_texts.append([text1, text2])
             i = i + 1
             # plt.show()
         plt.subplots_adjust(left=0.2,
@@ -150,6 +161,10 @@ def plot_and_save(data, filename):
         plt.savefig(pp, format='pdf')
         for x in range(0, len(axes)):
             plt.delaxes(axes[x])
+            text1 = bar_texts[x][0]
+            text2 = bar_texts[x][1]
+            text1.set_visible(False)
+            text2.set_visible(False)
     pp.close()
 
 
