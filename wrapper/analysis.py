@@ -91,10 +91,12 @@ def get_color(val):
         val1 = parse_util_time(val[0])
         val2 = parse_util_time(val[1])
     if (val1 == 0 and val2 == 0):
-        return 'black'
+        return 'green'
     if (val1 == val2):
         return 'green'
     percent = ((val2 - val1)/val1)*100
+    if (percent < 0):
+        percent = percent * -1
     if (percent == 0 or percent < 0):
         return 'green'
     elif (0 < percent <= 10):
@@ -105,9 +107,9 @@ def get_color(val):
 
 def plot_and_save(data, filename):
     pp = PdfPages(filename)
+    # plt.figure()
     for router in data:
-        plt.figure(figsize=(3, 3))
-        plt.figure()
+        # plt.figure(figsize=(3, 3))
         axes = []
         i = 1
         for metric in data[router]:
@@ -116,20 +118,29 @@ def plot_and_save(data, filename):
             plt.xticks(fontsize=4)
             plt.yticks(fontsize=4)
             # plt.title(f'{router} {metric} comparison', fontdict=font1)
-            plt.title("{} {} comparison".format(
-                router, metric), fontdict=font1)
+            # plt.title("{} {} comparison".format(
+            #     router, metric), fontdict=font1)
             color = get_color(data[router][metric])
             try:
                 plt.subplot(3, 3, i)
                 ax = plt.bar(['Baseline', 'Compare'], [
                     float(data[router][metric][0]), float(data[router][metric][1])], width=0.45, color=['blue', color])
                 axes.append(ax)
+                plt.title("{} {} comparison".format(
+                    router, metric), fontdict=font1)
+                print(metric, float(data[router][metric][0]), float(
+                    data[router][metric][1]), i)
             except ValueError:
                 plt.subplot(3, 3, i)
                 ax = plt.bar(['Baseline', 'Compare'], [
-                    parse_util_time(data[router][metric][0])*1000, parse_util_time(data[router][metric][1])*1000], width=0.45, color=['blue', color])
+                    parse_util_time(data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000], width=0.45, color=['blue', color])
                 axes.append(ax)
+                plt.title("{} {} comparison".format(
+                    router, metric), fontdict=font1)
+                print(metric, parse_util_time(
+                    data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000, i)
             i = i + 1
+            # plt.show()
         plt.subplots_adjust(left=0.2,
                             bottom=0.2,
                             right=0.9,
