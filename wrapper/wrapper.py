@@ -156,7 +156,7 @@ def test_run(baseline_version, build):
     baselined_file = os.path.join(base_dir, "Multicast", "Baseline",
                                   "XX_10_12_0001AJ", "BaselinedValue", "baselined_10_12.csv")
     plot_graph(baseline_dir=baselined_file, compare_dir=dest_file,
-               filename=summary_file)
+               filename=summary_file, title_prefix="{} Testrun".format(baseline_version))
 
 
 def default_run():
@@ -208,10 +208,12 @@ def run_build(args):
                 else:
                     update_baseline()
             elif run_mode == "testrun":
-                if len(args) > 5:
+                if len(args) > 4:
                     # Extracts baseline version to be comapred
                     baseline_version = args[4]
-                    build = args[5]
+                    build = ''
+                    if len(args) > 5:
+                        build = args[5]
                     print("test_run mode with values ",
                           baseline_version, build)
                     test_run(baseline_version, build)

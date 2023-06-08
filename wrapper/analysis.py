@@ -101,7 +101,7 @@ def get_color(val):
         return 'red'
 
 
-def plot_and_save(data, filename):
+def plot_and_save(data, filename, title_prefix=""):
     pp = PdfPages(filename)
     # plt.figure()
     for router in data:
@@ -123,8 +123,8 @@ def plot_and_save(data, filename):
                 ax = plt.bar(['Baseline', 'Testrun'], [
                     float(data[router][metric][0]), float(data[router][metric][1])], width=0.45, color=['blue', color])
                 axes.append(ax)
-                plt.title("{} {} comparison".format(
-                    router, metric), fontdict=font1)
+                plt.title("{} comparison".format(
+                    metric), fontdict=font1)
                 print(metric, float(data[router][metric][0]), float(
                     data[router][metric][1]), i)
                 text1 = plt.text(0, float(data[router][metric][0])//2, float(
@@ -137,8 +137,8 @@ def plot_and_save(data, filename):
                 ax = plt.bar(['Baseline', 'Testrun'], [
                     parse_util_time(data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000], width=0.45, color=['blue', color])
                 axes.append(ax)
-                plt.title("{} {} comparison".format(
-                    router, metric), fontdict=font1)
+                plt.title("{} comparison".format(
+                    metric), fontdict=font1)
                 print(metric, parse_util_time(
                     data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000, i)
                 text1 = plt.text(0, (parse_util_time(data[router][metric][0])/1000)//2, (parse_util_time(
@@ -154,7 +154,10 @@ def plot_and_save(data, filename):
                             top=0.9,
                             wspace=0.5,
                             hspace=0.6)
-        plt.savefig(pp, format='pdf')
+        plt.suptitle(title_prefix+"-"+router.capitalize(), fontsize=8)
+        # plt.savefig(pp, format='pdf')
+        # pp.attach_note("Hello", positionRect=[100, 100, 0, 0])
+        pp.savefig()
         for x in range(0, len(axes)):
             plt.delaxes(axes[x])
             text1 = bar_texts[x][0]
@@ -164,7 +167,7 @@ def plot_and_save(data, filename):
     pp.close()
 
 
-def plot_graph(baseline_dir, compare_dir, filename='sumamry.pdf'):
+def plot_graph(baseline_dir, compare_dir, filename='sumamry.pdf', title_prefix=""):
     baseline_df = pd.read_csv(baseline_dir)
     compare_df = pd.read_csv(compare_dir)
     baseline_metrics = baseline_df['Metric'].unique()
@@ -180,4 +183,4 @@ def plot_graph(baseline_dir, compare_dir, filename='sumamry.pdf'):
         for i in range(0, len(baseline_routers)):
             data[baseline_routers[i]][metric] = [
                 baseline_values[i], compare_values[i]]
-    plot_and_save(data, filename)
+    plot_and_save(data, filename, title_prefix)
