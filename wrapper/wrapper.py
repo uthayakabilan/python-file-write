@@ -151,6 +151,12 @@ def test_run(baseline_version, build):
     # Compare functionality
     read_and_copy(dest_dir, dest_file, "w")
     print(baseline_version, build)
+    summary_file = os.path.join(
+        base_dir, "testrun_10_12_summary_{}.pdf".format(current_date))
+    baselined_file = os.path.join(base_dir, "Multicast", "Baseline",
+                                  "XX_10_12_0001AJ", "BaselinedValue", "baselined_10_12.csv")
+    plot_graph(baseline_dir=baselined_file, compare_dir=dest_file,
+               filename=summary_file)
 
 
 def default_run():
