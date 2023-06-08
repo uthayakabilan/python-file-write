@@ -81,25 +81,21 @@ def create_object_template(router_list):
 
 
 def get_color(val):
-    val1, val2, *others = val
-    val1 = val[0]
-    val2 = val[1]
     try:
-        val1 = int(val[0])
-        val2 = int(val[1])
+        val1 = float(val[0])
+        val2 = float(val[1])
     except ValueError:
         val1 = parse_util_time(val[0])
         val2 = parse_util_time(val[1])
-    if (val1 == 0 and val2 == 0):
-        return 'green'
+    print(val1, val2)
     if (val1 == val2):
         return 'green'
-    percent = ((val2 - val1)/val1)*100
-    if (percent < 0):
-        percent = percent * -1
-    if (percent == 0 or percent < 0):
+    if (val1 == 0 and val2 == 0):
         return 'green'
-    elif (0 < percent <= 10):
+    percent = (val2 - val1)/val1 * 100
+    if (percent < 0):
+        return 'green'
+    elif (0 <= percent <= 10):
         return 'yellow'
     else:
         return 'red'
@@ -124,7 +120,7 @@ def plot_and_save(data, filename):
             color = get_color(data[router][metric])
             try:
                 plt.subplot(3, 3, i)
-                ax = plt.bar(['Baseline', 'Compare'], [
+                ax = plt.bar(['Baseline', 'Testrun'], [
                     float(data[router][metric][0]), float(data[router][metric][1])], width=0.45, color=['blue', color])
                 axes.append(ax)
                 plt.title("{} {} comparison".format(
@@ -138,7 +134,7 @@ def plot_and_save(data, filename):
                 bar_texts.append([text1, text2])
             except ValueError:
                 plt.subplot(3, 3, i)
-                ax = plt.bar(['Baseline', 'Compare'], [
+                ax = plt.bar(['Baseline', 'Testrun'], [
                     parse_util_time(data[router][metric][0])/1000, parse_util_time(data[router][metric][1])/1000], width=0.45, color=['blue', color])
                 axes.append(ax)
                 plt.title("{} {} comparison".format(
