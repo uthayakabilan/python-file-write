@@ -102,21 +102,23 @@ def baseline():
     )
     baselined_file = os.path.join(baselined_base_dir, "baselined_10_12.csv")
     summary_file = os.path.join(
-        base_dir, "baseline_summary_{}.pdf".format(current_date))
+        base_dir, "baseline_summary_10_12_{}.pdf".format(current_date))
     plot_graph(baseline_dir=baselined_file, compare_dir=dest_file,
-               filename=summary_file)
+               filename=summary_file, title_prefix="10_12 Baseline")
 
 
 def update_baseline():
     dest_dir = os.path.join(base_dir, "Multicast",
-                            "Baseline", "BaselinedValues")
+                            "Baseline", "BaselinedValues", "XL")
     # os.makedirs(dest_dir, exist_ok=True)
     try:
         os.makedirs(dest_dir)
     except:
         pass
-    dest_file = os.path.join(dest_dir, "baselined_values.csv")
-    read_and_copy(dest_dir, dest_file, "w")
+    dest_file = os.path.join(dest_dir, "global_baseline_10_12.csv")
+    baseline_file = os.path.join(base_dir, "Multicast", "Baseline",
+                                 "XX_10_12_0001AJ", "BaselinedValue", "baselined_10_12.csv")
+    read_and_copy(dest_dir, dest_file, source_file=baseline_file)
 
 
 def update_build_baseline(build):
@@ -160,6 +162,12 @@ def test_run(baseline_version, build):
 
 
 def default_run():
+    baselined_values_dir = os.path.join(
+        base_dir, "Multicast", "Baseline", "BaselinedValues", "XL")
+    try:
+        os.makedirs(baselined_values_dir)
+    except:
+        pass
     dest_dir = os.path.join(base_dir, "Multicast",
                             "TestRun", "XX_10_12_1000BD")
     # os.makedirs(dest_dir, exist_ok=True)
@@ -170,6 +178,13 @@ def default_run():
     # dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(date.today()))
     dest_file = os.path.join(dest_dir, "testrun_{}.csv".format(current_date))
     read_and_copy(dest_dir, dest_file, "w")
+    baselined_file = os.path.join(
+        baselined_values_dir, "global_baseline_10_12.csv")
+    summary_file = os.path.join(
+        base_dir, "summary_10_12_{}.pdf".format(current_date))
+    print("baselined_file value : ", baselined_file)
+    plot_graph(baseline_dir=baselined_file, compare_dir=dest_file,
+               filename=summary_file, title_prefix="10_12 Default_run")
 
 
 def remove_rsvn_id(args):
