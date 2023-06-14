@@ -154,7 +154,8 @@ def plot_and_save(data, filename, title_prefix=""):
                             top=0.9,
                             wspace=0.5,
                             hspace=0.6)
-        plt.suptitle(title_prefix+"-"+router.capitalize(), fontsize=8)
+        plt.suptitle(title_prefix+"-"+router.capitalize() +
+                     " Platforms-8400, 8100", fontsize=8)
         # plt.savefig(pp, format='pdf')
         # pp.attach_note("Hello", positionRect=[100, 100, 0, 0])
         pp.savefig()
